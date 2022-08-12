@@ -1,0 +1,2 @@
+﻿configDatabase.SetData(GetSpreadSheetData<%SERIALIZE_CLASS%>());
+      

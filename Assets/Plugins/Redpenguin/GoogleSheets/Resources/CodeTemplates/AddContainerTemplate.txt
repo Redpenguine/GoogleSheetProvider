@@ -1,0 +1,2 @@
+﻿AddContainer(new %SERIALIZE_CLASS%Container());
+      
