@@ -1,19 +1,6 @@
 
 ### Create Google Sheet Reader ###
 
-#### 1. Select "GoogleSheetReader" project under "urmobi.co" organization. ####
-
-<img src="./imgs/google-sheets-project-selection.png">
-
-#### 2. Create credential ####
-Go to Create Credential->Service Account
-
-<img src="./imgs/create-service-account-1.png">
-
-Grant **Owner** role
-
-<img src="./imgs/create-service-account-2.png">
-
 #### 3. Get service account key ####
   - Click on just created service account under **Service accounts** tab.
   - Go to **Keys** tab.
@@ -27,8 +14,6 @@ Grant **Owner** role
   Copy service account mail under Service Accounts tab.
   Add created service account to your GoogleSheets table
 
-  <img src="./imgs/add-service-account.png">
-
 #### 5. Import GoogleSheetReader package ####
 
   Just import package to unity.
@@ -40,15 +25,12 @@ Grant **Owner** role
 #### 6.  Fill Package variables
 
   Get google sheet id from link
-  https:/docs.google.com/spreadsheets/d/**1WLEmjKoIO5I683ZopKTtvoHDKmomAjxQ47n1gz3s8zY**/edit#gid=1162944446
+  https:/docs.google.com/spreadsheets/d/1g***********************/edit#gid=1162944446
   Add early downloaded client_secret.json
 
   <img src="./imgs/package-configuration.png">
 
   Create minimum one table script using data from google sheet
-
-
-  <img src="./imgs/table.png">
 
 
   ```C#
