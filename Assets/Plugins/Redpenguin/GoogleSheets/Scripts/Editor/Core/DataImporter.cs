@@ -82,10 +82,9 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
               field.SetValue(dataClass, Convert.ChangeType(sheetValues[fieldName][i], field.FieldType));
             }
           }
-          catch (Exception e)
+          catch
           {
-            //Console.WriteLine(e);
-            Debug.LogError($"Field format isn't correct {field.Name}");
+            Debug.LogError($"Table {database.name}, field {field.Name} format isn't correct!");
             throw;
           }
         }
