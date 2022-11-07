@@ -32,19 +32,8 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
     protected virtual string FileName => "ConfigDatabaseTemplate";
     protected virtual string SavingDatabasePath => GoogleSheetsVariables.SavePaths.DATABASE_SAVEPATH;
 
-    public virtual void Save()
-    {
-      var path = SavingDatabasePath;
-      CreateIfNotExist(path);
-      FileSerializer.WriteToBinaryFile($"{path}/{FileName}{Extension}", Database);
-      AdditionalSave();
-      Debug.Log($"<color=green>Save {FileName}</color>");
-    }
-
     public virtual void Load()
     {
-      var path = SavingDatabasePath;
-      CreateIfNotExist(path);
       _database = new T();
       var fileTemplate = Resources.Load<TextAsset>($"{FileName}");
       if (fileTemplate != null)
@@ -56,20 +45,9 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
       {
         Debug.Log("File template dont find!");
       }
+
       AdditionalLoad();
       InitAfterLoad();
-    }
-
-    private static void CreateIfNotExist(string path)
-    {
-      if (!Directory.Exists($"{path}"))
-      {
-        Directory.CreateDirectory($"{path}");
-      }
-    }
-
-    protected virtual void AdditionalSave()
-    {
     }
 
     protected virtual void AdditionalLoad()
