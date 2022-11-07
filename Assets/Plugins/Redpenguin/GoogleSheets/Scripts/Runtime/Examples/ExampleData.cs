@@ -14,6 +14,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Examples
     public List<int> myInts;        // [1,2,3]
     public List<string> myStrings;  // ["a","b","c"]
     public JsonExample jsonExample; // {"id":1,"myString":"string"}
+    public ExampleEnum exampleEnum; // Example1
   }
 
   [Serializable]
@@ -21,5 +22,12 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Examples
   {
     public int id;
     public string myString;
+  }
+
+  public enum ExampleEnum
+  {
+    None,
+    Example1,
+    Example2
   }
 }
