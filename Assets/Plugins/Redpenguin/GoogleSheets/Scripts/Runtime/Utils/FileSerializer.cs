@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace Redpenguin.GoogleSheets.Scripts.Runtime.Utils
 {
@@ -21,6 +22,17 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Utils
       {
         var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
         binaryFormatter.Serialize(stream, objectToWrite);
+      }
+    }
+    
+    public static void WriteToJsonFile<T>(string filePath, T objectToWrite, bool append = false)
+    {
+      JsonSerializer serializer = new JsonSerializer();
+      
+      using (StreamWriter sw = new StreamWriter(filePath))
+      using (JsonWriter writer = new JsonTextWriter(sw))
+      {
+        serializer.Serialize(writer, objectToWrite);
       }
     }
 
