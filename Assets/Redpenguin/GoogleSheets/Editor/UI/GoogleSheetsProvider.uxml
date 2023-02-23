@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
+        <ui:VisualElement style="flex-direction: row; height: auto;" />
+        <ui:Button text="Settings" display-tooltip-when-elided="true" name="ButtonSettings" />
+    </ui:VisualElement>
+    <ui:VisualElement style="flex-direction: row; justify-content: flex-start; align-items: auto;">
+        <ui:Foldout text="Containers" style="width: 100%;">
+            <ui:VisualElement name="Containers" />
+        </ui:Foldout>
+    </ui:VisualElement>
+    <ui:VisualElement name="Buttons">
+        <ui:Button text="Create sheets SO" display-tooltip-when-elided="true" name="ButtonCreateSO" />
+        <ui:Button text="Load data" display-tooltip-when-elided="true" name="ButtonLoad" />
+        <ui:Button text="Save to file" display-tooltip-when-elided="true" name="ButtonSave" />
+        <ui:Button text="Clear all saves" display-tooltip-when-elided="true" name="ButtonClear" />
+    </ui:VisualElement>
+</ui:UXML>
