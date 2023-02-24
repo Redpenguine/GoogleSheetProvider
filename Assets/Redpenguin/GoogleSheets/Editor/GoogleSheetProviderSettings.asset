@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abcd76ef31654da989c559f7956b03e4, type: 3}
+  m_Name: GoogleSheetProviderSettings
+  m_EditorClassIdentifier: 
+  googleSheetID: 1_uKrO3r_-6_TS492dCcQNxi6flRVAcKLDdbMvhx3BZo
+  credential: {fileID: 4900000, guid: c92ee1331be804b499a3e444c7c3e56a, type: 3}
+  serializationGroups:
+  - tag: Custom
+    color: {r: 0.31897292, g: 0.31719473, b: 0.6792453, a: 1}
+    savePath: 
+    fileName: 
+    packSeparately: 1
+    serializationRule: {fileID: 0}
+  - tag: Custom1
+    color: {r: 0.7730992, g: 0.7735849, b: 0.39044145, a: 1}
+    savePath: 
+    fileName: 
+    packSeparately: 1
+    serializationRule: {fileID: 0}
+  defaultGroup:
+    tag: Default
+    color: {r: 0.24705882, g: 0.5764706, b: 0.23529412, a: 1}
+    savePath: Resources
+    fileName: SpreadSheet
+    packSeparately: 1
+    serializationRule: {fileID: 11400000, guid: 7c3048f401e3af245aef7eccabea2826, type: 2}
+  currentGroup:
+    tag: Default
+    color: {r: 0.24705882, g: 0.5764706, b: 0.23529412, a: 1}
+    savePath: 
+    fileName: 
+    packSeparately: 0
+    serializationRule: {fileID: 11400000, guid: 7c3048f401e3af245aef7eccabea2826, type: 2}
