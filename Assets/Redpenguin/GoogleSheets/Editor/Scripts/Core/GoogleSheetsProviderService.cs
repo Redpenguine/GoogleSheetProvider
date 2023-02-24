@@ -4,31 +4,34 @@ using System.IO;
 using System.Linq;
 using Redpenguin.GoogleSheets.Editor;
 using Redpenguin.GoogleSheets.Editor.Utils;
+using Redpenguin.GoogleSheets.Runtime.Core;
 using Redpenguin.GoogleSheets.Scripts.Editor.Utils;
 using Redpenguin.GoogleSheets.Scripts.Runtime.Core;
+using Redpenguin.GoogleSheets.Scripts.Runtime.Examples;
+using Redpenguin.GoogleSheets.Scripts.Runtime.Utils;
 using UnityEditor;
 using UnityEngine;
 
 namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
 {
-  public class GoogleSheetsProviderService
+  public class GoogleSheetsProviderService : IDisposable
   {
     public List<ScriptableObject> SpreadSheetContainers { get; private set; } = new();
     public GoogleSheetProviderSettings Settings { get; set; }
 
     private readonly DataImporter _dataImporter;
-    private readonly SpreadSheetCodeFactory _codeFactory;
-    private readonly SpreadSheetScriptableObjectFactory _scriptObjFactory;
+    private readonly SpreadSheetCodeFactory _codeFactory = new();
+    private readonly SpreadSheetScriptableObjectFactory _scriptObjFactory = new();
     
     private ConfigDatabaseScriptableObject _configDatabase;
+    private readonly GoogleSheetsReader _googleSheetsReader;
+
     public GoogleSheetsProviderService()
     {
       if (SetupSettings()) return;
 
-      var googleSheetsReader = new GoogleSheetsReader(Settings.googleSheetID, Settings.credential.text);
-      _dataImporter = new DataImporter(googleSheetsReader);
-      _codeFactory = new SpreadSheetCodeFactory();
-      _scriptObjFactory = new SpreadSheetScriptableObjectFactory();
+      _googleSheetsReader = new GoogleSheetsReader(Settings.googleSheetID, Settings.credential.text);
+      _dataImporter = new DataImporter(_googleSheetsReader);
     }
 
     public void FindAllContainers()
@@ -36,7 +39,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       SpreadSheetContainers.Clear();
       
       AssetDatabaseHelper
-        .FindAssetsByType<SpreadSheetWrapper>()
+        .FindAssetsByType<SpreadSheetSoWrapper>()
         .ForEach(x => SpreadSheetContainers.Add(x));
       
       CreateConfigDatabase();
@@ -94,7 +97,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
     }
     public void LoadSheetsData()
     {
-      _dataImporter.LoadSheetsSOData();
+      _dataImporter.LoadAndLinkSheetsDataToSo(SpreadSheetContainers);
       CreateConfigDatabase();
       SaveToFile();
     }
@@ -111,9 +114,29 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
     }
     public void SaveToFile()
     {
-      ((ISpreadSheetSave) _configDatabase).SaveToFile();
-      Debug.Log("ConfigDatabase save to file!");
+      //((ISpreadSheetSave) _configDatabase).SaveToFile();
+      var container = new SpreadSheetsDatabase();
+      foreach (var spreadSheetContainer in SpreadSheetContainers)
+      {
+        var sr = (spreadSheetContainer as ISpreadSheetSO);
+        if(sr.SerializationGroupTag == Settings.currentGroup.tag)
+          container.AddContainer(sr.SheetDataContainer);
+      }
+
+      if (Settings.currentGroup.serializationRule == null)
+      {
+        Debug.LogError($"SerializationRule for {Settings.currentGroup.tag} Group doesn't exist.");
+        return;
+      }
+      var rule = Settings.currentGroup.serializationRule;
+      rule.Serialization(container);
+      Debug.Log($"{rule.FileName} save to file!");
       AssetDatabase.Refresh();
+    }
+
+    public void Dispose()
+    {
+      _googleSheetsReader.Dispose();
     }
   }
 }

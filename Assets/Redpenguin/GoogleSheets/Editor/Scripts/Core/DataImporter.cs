@@ -23,33 +23,18 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       _sheetsReader = sheetsReader;
     }
 
-    public void LoadSheetsData(List<ISheetDataContainer> list)
+    public void LoadAndLinkSheetsDataToSo(List<ScriptableObject> list)
     {
+      //var databaseScriptObj = AssetDatabaseHelper.FindAssetsByType<SpreadSheetWrapper>();
       var databaseScriptObj = list;
-      Debug.Log($"ISheetDataContainer Count {databaseScriptObj.Count}");
+      Debug.Log($"Count {databaseScriptObj.Count}");
       foreach (var database in databaseScriptObj)
       {
         var databaseType = database.GetType();
         var sheetValues = GetSheetValues(databaseType);
-        var dataList = databaseType.GetFields().First();
-        ((ISpreadSheet) database).SetListCount(sheetValues.First().Value.Count);
-        SetValues(dataList, database, sheetValues);
-      }
-    }
-
-    public void LoadSheetsSOData()
-    {
-     // var databaseScriptObj = Resources.LoadAll<ScriptableObject>(SheetsData);
-      var databaseScriptObj = AssetDatabaseHelper.FindAssetsByType<SpreadSheetWrapper>();
-      Debug.Log($"Count {databaseScriptObj.Count}");
-      foreach (var databas in databaseScriptObj)
-      {
-        var database = (ScriptableObject) databas;
-        var databaseType = database.GetType();
-        var sheetValues = GetSheetValues(databaseType);
         var dataList = databaseType.GetFields().FirstOrDefault(x => (x.GetValue(database) is IList));
         if(dataList == null) return;
-        ((ISpreadSheet) database).SetListCount(sheetValues.First().Value.Count);
+        ((ISpreadSheetSO) database).SetListCount(sheetValues.First().Value.Count);
         SetValues(dataList.GetValue(database) as IList, database, sheetValues);
         EditorUtility.SetDirty(database);
       }

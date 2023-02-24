@@ -5,7 +5,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
   public static class GoogleSheetsVariables
   {
     public const string ConfigDatabasePath = "ConfigurationDatabase/ConfigDatabase";
-    public const string ConfigDatabaseTemplateName = "ConfigDatabaseTemplate.bytes";
+    public const string ConfigDatabaseTemplateName = "ConfigDatabaseTemplate.json";
     public static class SavePaths
     {
 #if UNITY_ANDROID && !UNITY_EDITOR

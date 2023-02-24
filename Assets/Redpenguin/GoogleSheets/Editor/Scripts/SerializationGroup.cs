@@ -1,4 +1,5 @@
 using System;
+using Redpenguin.GoogleSheets.Scripts.Editor.Core;
 using UnityEngine;
 
 namespace Redpenguin.GoogleSheets.Editor
@@ -8,8 +9,7 @@ namespace Redpenguin.GoogleSheets.Editor
   {
     public string tag;
     public Color color;
-    public string savePath;
-    public string fileName;
     public bool packSeparately;
+    public SerializationRuleSoWrapper serializationRule;
   }
 }

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Redpenguin.GoogleSheets.Scripts.Runtime.Attributes;
+using Redpenguin.GoogleSheets.Scripts.Runtime.Core;
 
-namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
+namespace Redpenguin.GoogleSheets.Runtime.Core
 {
   [Serializable]
-  public abstract class SpreadSheetsDatabase
+  public class SpreadSheetsDatabase
   {
-    public List<ISheetDataContainer> Containers { get; private set; } = new List<ISheetDataContainer>();
+    public List<ISheetDataContainer> Containers { get; set; } = new();
 
     public T GetContainer<T>() where T : ISheetDataContainer
     {
@@ -22,7 +23,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
 
     public List<T> GetSpreadSheetData<T>() where T : ISheetData, new()
     {
-      foreach (var container in Containers.OfType<SheetDataContainer<T>>())
+      foreach (var container in Containers.OfType<SpreadSheetDataContainer<T>>())
       {
         return container.Data;
       }
@@ -31,21 +32,13 @@ namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
     }
     public void SetData<T>(List<T> list) where T : ISheetData, new()
     {
-      foreach (var container in Containers.OfType<SheetDataContainer<T>>())
+      foreach (var container in Containers.OfType<SpreadSheetDataContainer<T>>())
       {
         container.Data = list;
       }
     }
 
-    // public void RegisterContainers(List<T> dataContainers)
-    // {
-    //   this.Containers = dataContainers;
-    //   AddAditional();
-    // }
-    //
-    // protected virtual void AddAditional() { }
-
-    protected void AddContainer(ISheetDataContainer container)
+    public void AddContainer(ISheetDataContainer container)
     {
       if (!Containers.Contains(container))
         Containers.Add(container);

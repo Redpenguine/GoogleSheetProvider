@@ -2,11 +2,11 @@
 
 namespace Redpenguin.GoogleSheets.Scripts.Runtime.Core
 {
-  public interface ISpreadSheet
+  public interface ISpreadSheetSO
   {
     public string SerializationGroupTag { get; set; }
+    string JsonSerialized { get; }
+    ISheetDataContainer SheetDataContainer { get; }
     void SetListCount(int count);
-
-    List<object> GetData();
   }
 }

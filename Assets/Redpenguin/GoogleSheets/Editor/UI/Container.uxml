@@ -4,6 +4,10 @@
         <ui:VisualElement style="flex-direction: row;">
             <uie:ObjectField type="UnityEngine.ScriptableObject, UnityEngine.CoreModule" name="ContainerObject" allow-scene-objects="false" focusable="false" style="width: 98%;" />
         </ui:VisualElement>
+        <ui:VisualElement name="PathContainer" style="flex-direction: row; align-items: flex-start; justify-content: space-around; margin-left: 3px; margin-right: 3px;">
+            <ui:TextField picking-mode="Ignore" text="Save path" name="SavePath" style="width: 70%;" />
+            <ui:TextField picking-mode="Ignore" text="File Name" name="FileName" style="width: 30%;" />
+        </ui:VisualElement>
         <ui:VisualElement style="flex-direction: column;">
             <ui:VisualElement name="RulesContainer" style="flex-direction: row; flex-wrap: wrap;" />
         </ui:VisualElement>

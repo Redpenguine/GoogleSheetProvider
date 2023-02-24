@@ -33,6 +33,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
 
     private void OnDisable()
     {
+      _googleSheetsProviderService.Dispose();
       AssemblyReloadEvents.afterAssemblyReload -= OnAfterAssemblyReload;
     }
 
@@ -42,6 +43,7 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
 
       ButtonActionLink();
       DropdownGroupsSetup();
+      
       var folder = rootVisualElement.Q<VisualElement>("Containers");
       for (var i = 0; i < _googleSheetsProviderService.SpreadSheetContainers.Count; i++)
       {
@@ -52,17 +54,22 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
     private void DropdownGroupsSetup()
     {
       var dropdownField = rootVisualElement.Q<DropdownField>("DropdownGroups");
-      dropdownField.choices = _googleSheetsProviderService.Settings.serializationGroups.Select(x => x.tag).ToList();
-      dropdownField.index = 0;
-      dropdownField.Q(className:"unity-base-popup-field__text").style.backgroundColor = _googleSheetsProviderService.Settings.serializationGroups[0].color;
+      dropdownField.choices = _googleSheetsProviderService.Settings.SerializationGroups.Select(x => x.tag).ToList();
+      var index = _googleSheetsProviderService.Settings.SerializationGroups.FindIndex(x => x.tag == _googleSheetsProviderService
+        .Settings.currentGroup.tag);
+      dropdownField.index = index;
+      dropdownField.Q(className:"unity-base-popup-field__text").style.backgroundColor = _googleSheetsProviderService.Settings.SerializationGroups[index].color;
       dropdownField.RegisterValueChangedCallback(x => OnChangeDropdownValue(dropdownField));
     }
 
     private void OnChangeDropdownValue(DropdownField dropdownField)
     {
-      var rule = _googleSheetsProviderService.Settings.serializationGroups[dropdownField.index];
-      dropdownField.style.color = rule.color;
-      dropdownField.Q(className:"unity-base-popup-field__text").style.backgroundColor = rule.color;
+      var serializationGroup = _googleSheetsProviderService.Settings.SerializationGroups[dropdownField.index];
+      dropdownField.style.color = serializationGroup.color;
+      dropdownField.Q(className:"unity-base-popup-field__text").style.backgroundColor = serializationGroup.color;
+      _googleSheetsProviderService.Settings.currentGroup = serializationGroup;
+
+      //RecreateGUI();
     }
 
     private void ButtonActionLink()
@@ -83,7 +90,8 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       var containerSheetModel = new SheetEditorPresenter(
         view, 
         _googleSheetsProviderService.SpreadSheetContainers[i],  
-        _googleSheetsProviderService.Settings.serializationGroups
+        _googleSheetsProviderService.Settings.SerializationGroups, 
+        _googleSheetsProviderService.Settings.googleSheetMetaData
         );
       view.userData = containerSheetModel;
       folder.Add(view);
@@ -97,6 +105,11 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       await Task.Delay(TimeSpan.FromSeconds(0.1f));
       
       _googleSheetsProviderService.FindAllContainers();
+      RecreateGUI();
+    }
+
+    private void RecreateGUI()
+    {
       rootVisualElement.Clear();
       CreateGUI();
     }
