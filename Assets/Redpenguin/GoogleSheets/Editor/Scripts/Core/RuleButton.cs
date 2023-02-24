@@ -6,22 +6,23 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
 {
   public class RuleButton
   {
-    public Button Button;
-    public SerializationGroup Group;
+    private readonly Button _button;
+    public readonly SerializationGroup Group;
       
     public RuleButton(Button button, SerializationGroup group)
     {
-      Button = button;
+      _button = button;
       Group = group;
+      _button.text = Group.tag;
     }
     public void AddListener(Action<string> onClick)
     {
-      Button.clickable.clicked += () => onClick.Invoke(Group.tag);
+      _button.clickable.clicked += () => onClick.Invoke(Group.tag);
     }
 
     public void SetDarker(int percent)
     {
-      Button.style.backgroundColor = Group.color.MakeDarker(percent);
+      _button.style.backgroundColor = Group.color.MakeDarker(percent);
     }
   }
 }

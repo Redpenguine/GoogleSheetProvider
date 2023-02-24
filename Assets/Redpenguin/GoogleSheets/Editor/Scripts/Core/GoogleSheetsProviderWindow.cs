@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Redpenguin.GoogleSheets.Editor;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = System.Object;
 
 namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
 {
@@ -38,6 +40,33 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
     {
       tree.CloneTree(rootVisualElement);
 
+      ButtonActionLink();
+      DropdownGroupsSetup();
+      var folder = rootVisualElement.Q<VisualElement>("Containers");
+      for (var i = 0; i < _googleSheetsProviderService.SpreadSheetContainers.Count; i++)
+      {
+        CreateGroupButton(i, folder);
+      }
+    }
+
+    private void DropdownGroupsSetup()
+    {
+      var dropdownField = rootVisualElement.Q<DropdownField>("DropdownGroups");
+      dropdownField.choices = _googleSheetsProviderService.Settings.serializationGroups.Select(x => x.tag).ToList();
+      dropdownField.index = 0;
+      dropdownField.Q(className:"unity-base-popup-field__text").style.backgroundColor = _googleSheetsProviderService.Settings.serializationGroups[0].color;
+      dropdownField.RegisterValueChangedCallback(x => OnChangeDropdownValue(dropdownField));
+    }
+
+    private void OnChangeDropdownValue(DropdownField dropdownField)
+    {
+      var rule = _googleSheetsProviderService.Settings.serializationGroups[dropdownField.index];
+      dropdownField.style.color = rule.color;
+      dropdownField.Q(className:"unity-base-popup-field__text").style.backgroundColor = rule.color;
+    }
+
+    private void ButtonActionLink()
+    {
       rootVisualElement.Q<Button>("ButtonCreateSO").clickable.clicked += () =>
       {
         _isCreatingScripts = _googleSheetsProviderService.CreateAdditionalScripts();
@@ -46,24 +75,18 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       rootVisualElement.Q<Button>("ButtonLoad").clickable.clicked += _googleSheetsProviderService.LoadSheetsData;
       rootVisualElement.Q<Button>("ButtonSave").clickable.clicked += _googleSheetsProviderService.SaveToFile;
       rootVisualElement.Q<Button>("ButtonSettings").clickable.clicked += GoogleSheetsProviderAssetMenu.SelectSettingsAsset;
-
-      var folder = rootVisualElement.Q<VisualElement>("Containers");
-      for (var i = 0; i < _googleSheetsProviderService.SpreadSheetContainers.Count; i++)
-      {
-        CreateGroupButton(i, folder);
-      }
     }
 
     private void CreateGroupButton(int i, VisualElement folder)
     {
-      var sheetEditorView = new SheetEditorView();
-      var sheetEditorVisualElement = containerView.Instantiate();
-      
-      sheetEditorView.SetVisualElement(sheetEditorVisualElement);
-      sheetEditorView.Add(_googleSheetsProviderService.SpreadSheetContainers[i],
-        _googleSheetsProviderService.Settings.serializationGroups);
-      sheetEditorVisualElement.userData = sheetEditorView;
-      folder.Add(sheetEditorVisualElement);
+      var view = containerView.Instantiate();
+      var containerSheetModel = new SheetEditorPresenter(
+        view, 
+        _googleSheetsProviderService.SpreadSheetContainers[i],  
+        _googleSheetsProviderService.Settings.serializationGroups
+        );
+      view.userData = containerSheetModel;
+      folder.Add(view);
     }
 
     private async void OnAfterAssemblyReload()
@@ -72,8 +95,8 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       _isCreatingScripts = false;
       _googleSheetsProviderService.CreateScriptableObjects();
       await Task.Delay(TimeSpan.FromSeconds(0.1f));
+      
       _googleSheetsProviderService.FindAllContainers();
-
       rootVisualElement.Clear();
       CreateGUI();
     }

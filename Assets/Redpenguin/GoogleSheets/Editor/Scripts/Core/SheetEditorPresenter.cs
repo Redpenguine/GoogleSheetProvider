@@ -7,28 +7,32 @@ using UnityEngine.UIElements;
 
 namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
 {
-  public class SheetEditorView
+  public class SheetEditorPresenter
   {
-    public ObjectField ContainerObject;
-    public VisualElement RulesContainer;
+    private ObjectField _containerObject;
+    private VisualElement _rulesContainer;
     private ISpreadSheet _spreadSheet;
     private readonly List<RuleButton> _buttons = new();
 
-    public void Add(ScriptableObject scriptableObject, List<SerializationGroup> rules)
+    public SheetEditorPresenter(VisualElement view, ScriptableObject model, List<SerializationGroup> rules)
     {
-      ContainerObject.SetValueWithoutNotify(scriptableObject);
-      RulesContainer.Clear();
+      SetView(view);
+      ModelViewLink(model, rules);
+    }
+    private void ModelViewLink(ScriptableObject scriptableObject, List<SerializationGroup> rules)
+    {
+      _containerObject.SetValueWithoutNotify(scriptableObject);
+      _rulesContainer.Clear();
       _buttons.Clear();
       _spreadSheet = ((ISpreadSheet) scriptableObject);
       foreach (var rule in rules)
       {
-        var rb = new Button(() => OnButtonClick(rule.tag));
-        var ruleButton = new RuleButton(rb, rule);
+        var button = new Button(() => OnButtonClick(rule.tag));
+        var ruleButton = new RuleButton(button, rule);
         ruleButton.AddListener(OnButtonClick);
-        rb.text = rule.tag;
         ruleButton.SetDarker(_spreadSheet.SerializationGroupTag == rule.tag ? 0 : 50);
 
-        RulesContainer.Add(rb);
+        _rulesContainer.Add(button);
         _buttons.Add(ruleButton);
       }
     }
@@ -42,10 +46,10 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
       _spreadSheet.SerializationGroupTag = tag;
     }
       
-    public void SetVisualElement(VisualElement visualElement)
+    private void SetView(VisualElement visualElement)
     {
-      ContainerObject = visualElement.Q<ObjectField>("ContainerObject");
-      RulesContainer = visualElement.Q<VisualElement>("RulesContainer");
+      _containerObject = visualElement.Q<ObjectField>("ContainerObject");
+      _rulesContainer = visualElement.Q<VisualElement>("RulesContainer");
     }
   }
 }

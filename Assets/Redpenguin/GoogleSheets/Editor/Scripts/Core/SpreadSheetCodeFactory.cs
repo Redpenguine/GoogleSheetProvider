@@ -88,10 +88,10 @@ namespace Redpenguin.GoogleSheets.Scripts.Editor.Core
           count++;
         }
       }
-
+      ScriptsCreatedLog(count);
+      if (count == 0) return false;
       CreateScript(ConfigDatabaseReplace(configData), "ConfigDatabase", _configDatabaseSavePath);
       CreateScript(ConfigDatabaseSoReplace(configData), "ConfigDatabaseSO", _configDatabaseSavePath);
-      ScriptsCreatedLog(count);
       AssetDatabase.SaveAssets();
       AssetDatabase.Refresh();
       return count > 0;
